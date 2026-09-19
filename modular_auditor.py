@@ -1,45 +1,11 @@
-# inventory = 0
-# entries = 0
-# rejected_entries = 0
-
-# # Loop to continuously prompt the user for input until they choose to exit
-# while True:
-#     user_input = input("\nPlease enter the number of items to add to inventory or type 'exit' to quit: ")
-#     entries += 1 
-#     if user_input.lower() == 'exit':
-#         entries -= 1  # Decrement entries count since 'exit' is not a valid entry
-#         print("Total Units Processed:", inventory)
-#         print("Total entries made:", entries)
-#         break
-
-#     # Checks for negative numbers   
-#     if user_input.startswith('-') and user_input[1:].replace('.', '').isdigit(): # Checks for int/float negative numbers by replacing the "." in case of negative float numbers
-#         print("Invalid input. Please enter a non-negative integer number or type 'exit' to quit.")
-#         rejected_entries += 1
-#         continue
-
-#     # Checks for handle invalid input (non-integer values)    
-#     if not user_input.isdigit():
-#         print("Invalid input. Please enter an integer number or type 'exit' to quit.")
-#         rejected_entries += 1
-#         continue
-
-#     items_to_add = int(user_input) # Convert the user input to an integer
-#     inventory += items_to_add
-
-#     # Check if inventory exceeds 500 units
-#     if inventory > 500:
-#         print("Inventory exceed 500 units.", "Current units:", inventory)
-#         print("Number of entries:", entries)
-#         print("Number of Failed/Rejected Entries:", rejected_entries)
-#         break            
-
-#     print("Inventory updated. Current stock:", inventory)
-#     print("Number of entries:", entries)
-#     print("Number of Failed/Rejected Entries:", rejected_entries)
+# Set inventory to 0 in the start
+inventory = 0
+entries = 0
+rejected_entries = 0
 
 # Function of user input. Handles prompt, input validation and return a valid integer.
 def get_valid_input():
+    global rejected_entries # global variable to call the variable outside of the function
     while True:
         user_input = input("\nPlease enter the number of items to add to inventory or type 'exit' to quit: ")
         if user_input.lower() == "exit":
@@ -47,10 +13,12 @@ def get_valid_input():
 
         if user_input.startswith('-') and user_input[1:].replace('.', '').isdigit():
             print("Invalid input. Please enter a non-negative integer or type 'exit' to exit.")
+            rejected_entries += 1
             continue
 
         if not user_input.isdigit():
             print("Invalid input. Please enter an integer number or type 'exit' to quit.")
+            rejected_entries += 1
             continue
 
         return int(user_input)
@@ -60,20 +28,41 @@ def process_delivery(current_total, new_value):
     current_total = current_total + new_value
     return current_total
 
+# Function to take the delivery amount and tax
 def calculate_tax(amount):
-    tax = amount * 0.1
-    return tax
+    amount = amount * 0.1
+    return amount
 
-# Set inventory to 0 in the start
-inventory = 0
+# Function to print final summary
+def generate_report(total_units, failed_attempts):
+    print("\n--- Final Summary --- ")
+    print("Total Units Processed:", total_units)
+    print("Number of Failed/Rejected Entries:", failed_attempts)
 
 while True:
+    # Get input from user
     user_input = get_valid_input()
-    inventory = process_delivery(inventory, user_input)
-    tax = calculate_tax(user_input)
 
+    # Stop program if user enters "exit"
     if user_input == "exit":
+        generate_report(inventory, rejected_entries)
         break
 
-    print("Total inventory is:", inventory)
-    print("Tax is: ", tax)
+    # Process the delivery
+    inventory = process_delivery(inventory, user_input)
+
+    # Calcuating the tax
+    tax = calculate_tax(user_input)
+
+    # Count valid delivery other than "exit"
+    entries += 1
+
+    print("Inventory updated. Current stock:", inventory)
+    print("Tax for this delivery: $", tax)
+    print("Number of entries:", entries)
+    print("Number of Failed/Rejected Entries:", rejected_entries)
+
+    if inventory > 500:
+        print("Inventory exceeds 500 units.")
+        generate_report(inventory, rejected_entries)
+        break

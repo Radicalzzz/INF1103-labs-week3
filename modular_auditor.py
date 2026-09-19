@@ -60,10 +60,20 @@ def process_delivery(current_total, new_value):
     current_total = current_total + new_value
     return current_total
 
+def calculate_tax(amount):
+    tax = amount * 0.1
+    return tax
+
 # Set inventory to 0 in the start
 inventory = 0
 
 while True:
     user_input = get_valid_input()
     inventory = process_delivery(inventory, user_input)
+    tax = calculate_tax(user_input)
+
+    if user_input == "exit":
+        break
+
     print("Total inventory is:", inventory)
+    print("Tax is: ", tax)

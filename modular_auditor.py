@@ -58,7 +58,7 @@ while True:
     entries += 1
 
     print("Inventory updated. Current stock:", inventory)
-    print("Tax for this delivery: $", tax)
+    print(f"Tax for this delivery: ${tax}")
     print("Number of entries:", entries)
     print("Number of Failed/Rejected Entries:", rejected_entries)
 

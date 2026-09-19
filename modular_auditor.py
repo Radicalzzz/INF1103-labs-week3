@@ -55,7 +55,15 @@ def get_valid_input():
 
         return int(user_input)
 
+# Function to add units to inventory
+def process_delivery(current_total, new_value):
+    current_total = current_total + new_value
+    return current_total
+
+# Set inventory to 0 in the start
+inventory = 0
+
 while True:
     user_input = get_valid_input()
-    print(user_input)
-    break
+    inventory = process_delivery(inventory, user_input)
+    print("Total inventory is:", inventory)
